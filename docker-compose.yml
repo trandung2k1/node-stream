@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+    pg:
+        image: postgres
+        container_name: postgres-container
+        restart: always
+        # set shared memory limit when using docker-compose
+        shm_size: 128mb
+        # or set shared memory limit when deploy via swarm stack
+        ports:
+            - 5432:5432
+        volumes:
+            - pgData:/var/lib/postgresql/data
+        environment:
+            POSTGRES_PASSWORD: 123456789
+            POSTGRES_DB: SHOP
+        networks:
+            - trandung
+
+    adminer:
+        image: adminer
+        container_name: admine-container
+        restart: always
+        ports:
+            - 8000:8080
+        depends_on:
+            - pg
+        networks:
+            - trandung
+        links:
+            - pg
+
+volumes:
+    pgData:
+networks:
+    trandung:
+        driver: bridge
